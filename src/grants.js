@@ -1,8 +1,8 @@
 export const grants = [
-  'create_company',
-  'edit_company',
-  'delete_company',
-  'read_companies',
-];
+  'create_workflow',
+  'edit_workflow',
+  'delete_workflow',
+  'read_workflow'
+]
 
-export default grants;
+export default grants

@@ -17,12 +17,17 @@ const AsyncWorkflows = MyLoadable({
 const AsyncWorkflow = MyLoadable({
   loader: () => import('./containers/Workflows/Workflow'),
 });
+const AsyncWorkflowStep = MyLoadable({
+  loader: () => import('./containers/WorkflowSteps/WorkflowStep'),
+});
 
 const Routes = [
   <RestrictedRoute type="private" path="/" exact component={AsyncDashboard} />,
   <RestrictedRoute type="private" path="/workflows" exact component={AsyncWorkflows} />,
   <RestrictedRoute type="private" path="/workflows/create" exact component={AsyncWorkflow} />,
   <RestrictedRoute type="private" path="/workflows/edit/:uid/:editType" exact component={AsyncWorkflow} />,
+  <RestrictedRoute type="private" path="/workflow_steps/:workflowUid/create" exact component={AsyncWorkflowStep} />,
+  <RestrictedRoute type="private" path="/workflow_steps/:workflowUid/edit/:uid" exact component={AsyncWorkflowStep} />,
   <RestrictedRoute
     type="private"
     path="/dashboard"

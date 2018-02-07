@@ -1,4 +1,4 @@
-import WorkflowForm from '../../components/Forms/WorkflowForm'
+import Activity from 'rmw-shell/lib/containers/Activity'
 import Dialog from 'material-ui/Dialog'
 import FireForm from 'fireform';
 import FlatButton from 'material-ui/FlatButton'
@@ -6,9 +6,10 @@ import FontIcon from 'material-ui/FontIcon'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import SearchField from 'rmw-shell/lib/components/SearchField'
+import WorkflowForm from '../../components/Forms/WorkflowForm'
+import WorkflowSteps from '../WorkflowSteps/WorkflowSteps'
 import isGranted from 'rmw-shell/lib/utils/auth'
 import muiThemeable from 'material-ui/styles/muiThemeable'
-import Activity from 'rmw-shell/lib/containers/Activity'
 import { ResponsiveMenu } from 'material-ui-responsive-menu'
 import { Tabs, Tab } from 'material-ui/Tabs'
 import { change, submit } from 'redux-form'
@@ -181,16 +182,16 @@ class Workflow extends Component {
                             </div>
                         }
                     </Tab>
-                    <Tab
-                        value={'steps'}
-                        icon={<FontIcon className="material-icons">group_add</FontIcon>}>
-                        {
-                            editType === 'steps' &&
-                            <div>
-
-                            </div>
-                        }
-                    </Tab>
+                    {uid &&
+                        <Tab
+                            value={'steps'}
+                            icon={<FontIcon className="material-icons">timeline</FontIcon>}>
+                            {
+                                editType === 'steps' &&
+                                <WorkflowSteps  {...this.props} />
+                            }
+                        </Tab>
+                    }
                 </Tabs>
 
                 <Dialog

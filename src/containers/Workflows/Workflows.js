@@ -16,6 +16,7 @@ import PropTypes from 'prop-types'
 import Scrollbar from 'rmw-shell/lib/components/Scrollbar'
 import SearchField from 'rmw-shell/lib/components/SearchField'
 import { filterSelectors, filterActions } from 'material-ui-filter'
+import { getList } from 'firekit'
 
 const path = `workflows`
 
@@ -62,7 +63,7 @@ class Workflows extends Component {
             <Avatar
               alt="person"
               src={val.photoURL}
-              icon={<FontIcon className="material-icons" color={'red'}>person</FontIcon>}
+              icon={<FontIcon className="material-icons" color={'red'}>linear_scale</FontIcon>}
             />
           </div>
 
@@ -142,12 +143,15 @@ Workflows.propTypes = {
 }
 
 const mapStateToProps = (state) => {
-  const { lists, filters } = state
-
-  const list = filterSelectors.getFilteredList('workflows', filters, lists[path], fieldValue => fieldValue.val)
+  const { filters } = state
 
   return {
-    list,
+    list: filterSelectors.getFilteredList(
+      path,
+      filters,
+      getList(state, path),
+      fieldValue => fieldValue.val
+    ),
     isGranted: grant => isGranted(state, grant)
   }
 }

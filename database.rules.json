@@ -81,9 +81,17 @@
       ".write": "auth != null"
     },
     "workflows": {
-      ".read": "(auth != null && root.child('admins/'+auth.uid).exists()) || root.child('user_workflows/'+auth.uid+'/read_companies').exists()",
+      ".read": "(auth != null && root.child('admins/'+auth.uid).exists()) || root.child('user_grants/'+auth.uid+'/read_workflows').exists()",
       "$uid": {
         ".write": "(auth != null && root.child('admins/'+auth.uid).exists()) || (data.exists() && newData.exists() && root.child('user_grants/'+auth.uid+'/edit_workflow').exists()) || (!data.exists() && newData.exists() && root.child('user_grants/'+auth.uid+'/create_workflow').exists()) || (data.exists() && !newData.exists() && root.child('user_grants/'+auth.uid+'/delete_workflows').exists())"
+      }
+    },
+    "workflow_steps": {
+      "$uid": {
+        ".read": "(auth != null && root.child('admins/'+auth.uid).exists()) || root.child('user_grants/'+auth.uid+'/read_workflow_steps').exists()",
+        "$uid": {
+          ".write": "(auth != null && root.child('admins/'+auth.uid).exists()) || (data.exists() && newData.exists() && root.child('user_grants/'+auth.uid+'/edit_workflow_step').exists()) || (!data.exists() && newData.exists() && root.child('user_grants/'+auth.uid+'/create_workflow_step').exists()) || (data.exists() && !newData.exists() && root.child('user_grants/'+auth.uid+'/delete_workflows_step').exists())"
+        }
       }
     },
     "public_chats": {

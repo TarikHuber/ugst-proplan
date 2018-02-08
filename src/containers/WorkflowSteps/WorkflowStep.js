@@ -61,7 +61,7 @@ class WorkflowStep extends Component {
             submit,
             muiTheme,
             isGranted,
-            delete_company,
+            delete_workflow_step,
             uid,
             firebaseApp,
             path
@@ -93,7 +93,7 @@ class WorkflowStep extends Component {
                 text: intl.formatMessage({ id: 'delete' }),
                 icon: <FontIcon className="material-icons" color={muiTheme.palette.canvasColor}>delete</FontIcon>,
                 tooltip: intl.formatMessage({ id: 'delete' }),
-                onClick: () => { setSimpleValue('delete_workflow', true) }
+                onClick: () => { setSimpleValue('delete_workflow_step', true) }
             }
         ]
 
@@ -129,12 +129,12 @@ class WorkflowStep extends Component {
 
 
                 <Dialog
-                    title={intl.formatMessage({ id: 'delete_company_title' })}
+                    title={intl.formatMessage({ id: 'delete_workflow_step_title' })}
                     actions={actions}
                     modal={false}
-                    open={delete_company === true}
+                    open={delete_workflow_step === true}
                     onRequestClose={this.handleClose}>
-                    {intl.formatMessage({ id: 'delete_company_message' })}
+                    {intl.formatMessage({ id: 'delete_workflow_step_message' })}
                 </Dialog>
             </Activity>
         )
@@ -157,14 +157,14 @@ const mapStateToProps = (state, ownProps) => {
 
     const uid = match.params.uid
     const workflowUid = match.params.workflowUid
-    const delete_company = simpleValues.delete_company
+    const delete_workflow_step = simpleValues.delete_workflow_step
 
     const path = `workflow_steps/${workflowUid}`
 
     return {
         path,
         uid,
-        delete_company,
+        delete_workflow_step,
         intl,
         isGranted: grant => isGranted(state, grant)
     }

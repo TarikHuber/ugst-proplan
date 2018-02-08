@@ -11,7 +11,7 @@ import PropTypes from 'prop-types'
 import { AvatarImageField } from '../ReduxFormFields'
 
 class Form extends Component {
-  render () {
+  render() {
     const {
       handleSubmit,
       intl,
@@ -40,7 +40,7 @@ class Form extends Component {
             change={this.props.change}
             initialized={initialized}
             intl={intl}
-            path={'companies'}
+            path={'workflows'}
           />
         </div>
 

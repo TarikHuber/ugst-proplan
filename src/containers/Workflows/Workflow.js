@@ -57,7 +57,7 @@ class Workflow extends Component {
 
     handleClose = () => {
         const { setSimpleValue } = this.props
-        setSimpleValue('delete_company', false)
+        setSimpleValue('delete_workflow', false)
     }
 
     handleDelete = () => {
@@ -93,7 +93,7 @@ class Workflow extends Component {
             submit,
             muiTheme,
             isGranted,
-            delete_company,
+            delete_workflow,
             editType,
             uid,
             setSearch,
@@ -119,7 +119,7 @@ class Workflow extends Component {
                 text: intl.formatMessage({ id: 'save' }),
                 icon: <FontIcon className="material-icons" color={muiTheme.palette.canvasColor}>save</FontIcon>,
                 tooltip: intl.formatMessage({ id: 'save' }),
-                onClick: () => { submit('company') }
+                onClick: () => { submit('workflow') }
             },
             {
                 hidden: uid === undefined || !isGranted(`delete_${form_name}`),
@@ -195,12 +195,12 @@ class Workflow extends Component {
                 </Tabs>
 
                 <Dialog
-                    title={intl.formatMessage({ id: 'delete_company_title' })}
+                    title={intl.formatMessage({ id: 'delete_workflow_title' })}
                     actions={actions}
                     modal={false}
-                    open={delete_company === true}
+                    open={delete_workflow === true}
                     onRequestClose={this.handleClose}>
-                    {intl.formatMessage({ id: 'delete_company_message' })}
+                    {intl.formatMessage({ id: 'delete_workflow_message' })}
                 </Dialog>
             </Activity>
         )
@@ -223,7 +223,7 @@ const mapStateToProps = (state, ownProps) => {
 
     const uid = match.params.uid
     const editType = match.params.editType ? match.params.editType : 'data'
-    const delete_company = simpleValues.delete_company
+    const delete_workflow = simpleValues.delete_workflow
 
     const userCompaniesPath = `user_companies/`
     const userCompanies = lists[userCompaniesPath] ? lists[userCompaniesPath] : []
@@ -236,7 +236,7 @@ const mapStateToProps = (state, ownProps) => {
         userCompanies,
         uid,
         editType,
-        delete_company,
+        delete_workflow,
         intl,
         isGranted: grant => isGranted(state, grant)
     }

@@ -1,4 +1,4 @@
-import { defineMessages } from 'react-intl';
+import { defineMessages } from 'react-intl'
 
 const messages = defineMessages({
   app_name: 'React Most Wanted',
@@ -146,6 +146,14 @@ const messages = defineMessages({
   user_label_search: 'Search user',
   document: 'Document',
   collection: 'Collection',
-});
 
-export default messages;
+  workflows: 'Workflows',
+  edit_workflow: 'Edit workflow',
+  create_workflow: 'Create workflow',
+  error_required_field: 'Required field',
+  error_name_exists: 'Name exists',
+  delete_workflow_title: 'Delete workflow',
+  delete_workflow_message: 'Workflow will be deleted!'
+})
+
+export default messages

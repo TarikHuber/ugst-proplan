@@ -68,6 +68,18 @@ const getMenuItems = props => {
       leftIcon: <FontIcon className='material-icons'>dashboard</FontIcon>
     },
     {
+      value: `/projects/${auth.uid}`,
+      visible: isAuthorised,
+      primaryText: intl.formatMessage({ id: 'projects' }),
+      leftIcon: <FontIcon className='material-icons'>camera_roll</FontIcon>
+    },
+    {
+      value: '/workflows',
+      visible: isAuthorised,
+      primaryText: intl.formatMessage({ id: 'workflows' }),
+      leftIcon: <FontIcon className='material-icons'>linear_scale</FontIcon>
+    },
+    {
       visible: isAuthorised,
       primaryText: intl.formatMessage({ id: 'chats' }),
       primaryTogglesNestedList: true,
@@ -94,20 +106,14 @@ const getMenuItems = props => {
       ]
     },
     {
-      value: '/workflows',
-      visible: isAuthorised,
-      primaryText: intl.formatMessage({ id: 'workflows' }),
-      leftIcon: <FontIcon className='material-icons'>linear_scale</FontIcon>
-    },
-    {
-      visible: isAuthorised, // In prod: isGranted('administration'),
+      visible: isGranted('administration'),
       primaryTogglesNestedList: true,
       primaryText: intl.formatMessage({ id: 'administration' }),
       leftIcon: <FontIcon className='material-icons'>security</FontIcon>,
       nestedItems: [
         {
           value: '/users',
-          visible: isAuthorised, // In prod: isGranted('read_users'),
+          visible: isGranted('read_users'),
           primaryText: intl.formatMessage({ id: 'users' }),
           leftIcon: <FontIcon className='material-icons'>group</FontIcon>
         },

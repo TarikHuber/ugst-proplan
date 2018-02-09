@@ -28,8 +28,26 @@ class Workflows extends Component {
     watchList(path)
   }
 
+  handleOnItemClick = (key) => {
+    const { type, auth, firebaseApp, history } = this.props
+
+    if (type === 'select') {
+      firebaseApp.database().ref(`user_projects/${auth.uid}`).push(true).then(snap => {
+        firebaseApp.database().ref(`projects/${snap.key}`).set({ authorUid: auth.uid, name: 'New Project' })
+        firebaseApp.database().ref(`project_users/${snap.key}/${auth.uid}`).set(true)
+
+        history.push(`/projects/edit/${snap.key}/data`)
+      })
+
+
+    } else {
+      history.push(`/${path}/edit/${key}/data`)
+    }
+
+  }
+
   renderItem = (i, k) => {
-    const { list, history, muiTheme } = this.props
+    const { list, muiTheme } = this.props
 
     const key = list[i].key
     const val = list[i].val
@@ -53,7 +71,7 @@ class Workflows extends Component {
 
     return <div key={key}>
       <ListItem
-        onClick={() => history.push(`/${path}/edit/${key}/data`)}
+        onClick={() => { this.handleOnItemClick(key) }}
         key={key}
         id={key}
         innerDivStyle={{ padding: 0.5 }}
@@ -142,10 +160,15 @@ Workflows.propTypes = {
   isGranted: PropTypes.func.isRequired,
 }
 
-const mapStateToProps = (state) => {
-  const { filters } = state
+const mapStateToProps = (state, ownProps) => {
+  const { filters, auth } = state
+  const { match } = ownProps
+
+  const type = match.params.type
 
   return {
+    type,
+    auth,
     list: filterSelectors.getFilteredList(
       path,
       filters,

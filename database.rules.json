@@ -4,7 +4,7 @@
     "admins": {
       ".read": "auth != null",
       "$uid": {
-        ".write": "auth != null || root.child('admins/'+auth.uid).exists()"
+        ".write": "root.child('admins/'+auth.uid).exists()"
       }
     },
     "predefined_chat_messages": {
@@ -92,6 +92,24 @@
         "$uid": {
           ".write": "(auth != null && root.child('admins/'+auth.uid).exists()) || (data.exists() && newData.exists() && root.child('user_grants/'+auth.uid+'/edit_workflow_step').exists()) || (!data.exists() && newData.exists() && root.child('user_grants/'+auth.uid+'/create_workflow_step').exists()) || (data.exists() && !newData.exists() && root.child('user_grants/'+auth.uid+'/delete_workflows_step').exists())"
         }
+      }
+    },
+    "projects": {
+      "$uid": {
+        ".read": "(auth != null && root.child('admins/'+auth.uid).exists()) || root.child('user_projects/'+auth.uid+'/'+$uid).exists()",
+        ".write": "(auth != null && root.child('admins/'+auth.uid).exists()) || root.child('user_projects/'+auth.uid+'/'+$uid).exists()"
+      }
+    },
+    "user_projects": {
+      "$uid": {
+        ".read": "auth != null && $uid===auth.uid",
+        ".write": "auth != null && $uid===auth.uid"
+      }
+    },
+    "project_users": {
+      "$uid": {
+        ".read": "auth != null && root.child('user_projects/'+auth.uid+'/'+$uid).exists()",
+        ".write": "auth != null && root.child('user_projects/'+auth.uid+'/'+$uid).exists()"
       }
     },
     "public_chats": {

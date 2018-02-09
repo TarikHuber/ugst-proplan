@@ -155,7 +155,8 @@ const messages = defineMessages({
   delete_workflow_title: 'Delete workflow',
   delete_workflow_message: 'Workflow will be deleted!',
   delete_workflow_step_title: 'Delete workflow step',
-  delete_workflow_step_message: 'Workflow step will be deleted!'
+  delete_workflow_step_message: 'Workflow step will be deleted!',
+  projects: 'Projects'
 })
 
 export default messages

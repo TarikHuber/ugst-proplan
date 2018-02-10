@@ -26,15 +26,22 @@ class Workflows extends Component {
     const { watchList, setSearch } = this.props
     setSearch('workflows', '')
     watchList(path)
+    watchList('workflow_steps')
   }
 
   handleOnItemClick = (key) => {
-    const { type, auth, firebaseApp, history } = this.props
+    const { type, auth, firebaseApp, history, workflowSteps } = this.props
 
     if (type === 'select') {
       firebaseApp.database().ref(`user_projects/${auth.uid}`).push(true).then(snap => {
         firebaseApp.database().ref(`projects/${snap.key}`).set({ authorUid: auth.uid, name: 'New Project' })
         firebaseApp.database().ref(`project_users/${snap.key}/${auth.uid}`).set(true)
+
+        workflowSteps.forEach(workflowStepSnap => {
+          if (workflowStepSnap.key === key) {
+            firebaseApp.database().ref(`project_steps/${snap.key}`).set(workflowStepSnap.val)
+          }
+        });
 
         history.push(`/projects/edit/${snap.key}/data`)
       })
@@ -175,6 +182,7 @@ const mapStateToProps = (state, ownProps) => {
       getList(state, path),
       fieldValue => fieldValue.val
     ),
+    workflowSteps: getList(state, 'workflow_steps'),
     isGranted: grant => isGranted(state, grant)
   }
 }

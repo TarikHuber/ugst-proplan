@@ -22,7 +22,7 @@ class WorkflowSteps extends Component {
   }
 
   renderItem = (i, k) => {
-    const { steps, history, workflowUid } = this.props
+    const { steps, history, workflowUid, basePath } = this.props
 
     const key = steps[i].key
     const val = steps[i].val
@@ -43,7 +43,7 @@ class WorkflowSteps extends Component {
         key={i}
         primaryText={`${val.name}`}
         secondaryText={`${val.description}`}
-        onClick={() => history.push(`/workflow_steps/${workflowUid}/edit/${key}`)}
+        onClick={() => history.push(`/steps/${basePath}/${workflowUid}/edit/${key}`)}
         id={i}
       />
       <Divider inset={true} />
@@ -55,6 +55,7 @@ class WorkflowSteps extends Component {
       steps,
       history,
       isGranted,
+      basePath,
       workflowUid
     } = this.props
 
@@ -70,7 +71,7 @@ class WorkflowSteps extends Component {
         {
           isGranted('create_workflow_step') &&
           <FloatingActionButton
-            onClick={() => history.push(`/workflow_steps/${workflowUid}/create`)}
+            onClick={() => history.push(`/steps/${basePath}/${workflowUid}/create`)}
             style={{ position: 'fixed', bottom: 15, right: 20, zIndex: 99 }}
             secondary={true}>
             <FontIcon className="material-icons" >add</FontIcon>
@@ -89,13 +90,14 @@ WorkflowSteps.propTypes = {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  const { match } = ownProps
+  const { match, basePath } = ownProps
 
   const workflowUid = match.params.uid
-  const path = `workflow_steps/${workflowUid}`
+  const path = `${basePath}/${workflowUid}`
 
   return {
     path,
+    basePath,
     workflowUid,
     steps: getList(state, path),
     isGranted: grant => isGranted(state, grant)

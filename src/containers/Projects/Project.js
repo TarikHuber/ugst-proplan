@@ -20,7 +20,14 @@ import { withFirebase } from 'firekit-provider'
 import { withRouter } from 'react-router-dom'
 import UsersToggle from '../UsersToggle/UsersToggle'
 import { getList } from 'firekit'
-
+import WorkflowSteps from '../WorkflowSteps/WorkflowSteps'
+import {
+    Step,
+    Stepper,
+    StepLabel,
+    StepContent,
+} from 'material-ui/Stepper';
+import RaisedButton from 'material-ui/RaisedButton'
 
 const path = 'projects'
 const form_name = 'project'
@@ -53,6 +60,7 @@ class Project extends Component {
         const { watchList, uid, setSearch } = this.props
         setSearch('users_toggle', '')
         watchList(`project_users/${uid}`)
+        watchList(`project_steps/${uid}`)
         watchList(path)
     }
 
@@ -116,6 +124,42 @@ class Project extends Component {
 
     }
 
+    handleNext = () => {
+        //const { firebaseApp } = this.props;
+
+    };
+
+    handlePrev = () => {
+        //const { firebaseApp } = this.props;
+
+    };
+
+    renderStepActions = (step) => {
+        const { stepIndex } = this.props;
+
+        return (
+            <div style={{ margin: '12px 0' }}>
+                <RaisedButton
+                    label={stepIndex === 2 ? 'Finish' : 'Next'}
+                    disableTouchRipple={true}
+                    disableFocusRipple={true}
+                    primary={true}
+                    onClick={this.handleNext}
+                    style={{ marginRight: 12 }}
+                />
+                {step > 0 && (
+                    <FlatButton
+                        label="Back"
+                        disabled={stepIndex === 0}
+                        disableTouchRipple={true}
+                        disableFocusRipple={true}
+                        onClick={this.handlePrev}
+                    />
+                )}
+            </div>
+        );
+    }
+
 
     render() {
         const {
@@ -130,6 +174,7 @@ class Project extends Component {
             editType,
             uid,
             setSearch,
+            projectSteps,
             firebaseApp
     } = this.props
 
@@ -212,6 +257,25 @@ class Project extends Component {
                                         handlePhotoUploadSuccess={this.handlePhotoUploadSuccess}
                                     />
                                 </FireForm>
+                                <div>
+                                    <Stepper activeStep={''} orientation="vertical">
+
+                                        {projectSteps.map(step => {
+                                            return <Step>
+                                                <StepLabel>{step.val.name}</StepLabel>
+                                                <StepContent>
+                                                    <p>
+                                                        {step.val.description}
+                                                    </p>
+                                                    {this.renderStepActions(step.key)}
+                                                </StepContent>
+                                            </Step>
+                                        })
+
+                                        }
+
+                                    </Stepper>
+                                </div>
                             </div>
                         }
                     </Tab>
@@ -226,6 +290,16 @@ class Project extends Component {
                                     getValue={this.getToggledValue}
                                     onToggle={this.handleUserToggle}
                                 />
+                            }
+                        </Tab>
+                    }
+                    {uid &&
+                        <Tab
+                            value={'steps'}
+                            icon={<FontIcon className="material-icons">timeline</FontIcon>}>
+                            {
+                                editType === 'steps' &&
+                                <WorkflowSteps  {...this.props} basePath={'project_steps'} />
                             }
                         </Tab>
                     }
@@ -276,6 +350,7 @@ const mapStateToProps = (state, ownProps) => {
         editType,
         delete_project,
         projectUsers: getList(state, `project_users/${uid}`),
+        projectSteps: getList(state, `project_steps/${uid}`),
         intl,
         isGranted: grant => isGranted(state, grant)
     }

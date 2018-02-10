@@ -94,6 +94,12 @@
         }
       }
     },
+    "project_steps": {
+      "$uid": {
+        ".read": "auth != null && root.child('user_projects/'+auth.uid+'/'+$uid).exists()",
+        ".write": "auth != null && root.child('user_projects/'+auth.uid+'/'+$uid).exists()"
+      }
+    },
     "projects": {
       "$uid": {
         ".read": "(auth != null && root.child('admins/'+auth.uid).exists()) || root.child('user_projects/'+auth.uid+'/'+$uid).exists()",

@@ -188,7 +188,7 @@ class Workflow extends Component {
                             icon={<FontIcon className="material-icons">timeline</FontIcon>}>
                             {
                                 editType === 'steps' &&
-                                <WorkflowSteps  {...this.props} />
+                                <WorkflowSteps  {...this.props} basePath={'workflow_steps'} />
                             }
                         </Tab>
                     }

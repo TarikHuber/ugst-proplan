@@ -156,10 +156,11 @@ const mapStateToProps = (state, ownProps) => {
     const { match } = ownProps
 
     const uid = match.params.uid
+    const basePath = match.params.basePath
     const workflowUid = match.params.workflowUid
     const delete_workflow_step = simpleValues.delete_workflow_step
 
-    const path = `workflow_steps/${workflowUid}`
+    const path = `${basePath}/${workflowUid}`
 
     return {
         path,

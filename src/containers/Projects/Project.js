@@ -19,7 +19,7 @@ import { setSimpleValue } from 'rmw-shell/lib/store/simpleValues/actions'
 import { withFirebase } from 'firekit-provider'
 import { withRouter } from 'react-router-dom'
 import UsersToggle from '../UsersToggle/UsersToggle'
-import { getList } from 'firekit'
+import { getList, getPath } from 'firekit'
 import WorkflowSteps from '../WorkflowSteps/WorkflowSteps'
 import {
     Step,
@@ -57,8 +57,9 @@ class Project extends Component {
     }
 
     componentDidMount() {
-        const { watchList, uid, setSearch } = this.props
+        const { watchList, watchPath, uid, setSearch } = this.props
         setSearch('users_toggle', '')
+        watchPath(`projects/${uid}`)
         watchList(`project_users/${uid}`)
         watchList(`project_steps/${uid}`)
         watchList(path)
@@ -124,23 +125,35 @@ class Project extends Component {
 
     }
 
+    getCurrentIndex = () => {
+
+    }
+
     handleNext = () => {
-        //const { firebaseApp } = this.props;
+        const { firebaseApp, uid, stepIndex } = this.props;
+
+        firebaseApp.database().ref(`${path}/${uid}`).update({
+            stepIndex: stepIndex + 1
+        })
 
     };
 
     handlePrev = () => {
-        //const { firebaseApp } = this.props;
+        const { firebaseApp, uid, stepIndex } = this.props;
+
+        firebaseApp.database().ref(`${path}/${uid}`).update({
+            stepIndex: stepIndex - 1
+        })
 
     };
 
     renderStepActions = (step) => {
-        const { stepIndex } = this.props;
+        const { stepIndex, projectSteps } = this.props;
 
         return (
             <div style={{ margin: '12px 0' }}>
                 <RaisedButton
-                    label={stepIndex === 2 ? 'Finish' : 'Next'}
+                    label={stepIndex + 1 === projectSteps.length ? 'Finish' : 'Next'}
                     disableTouchRipple={true}
                     disableFocusRipple={true}
                     primary={true}
@@ -175,7 +188,8 @@ class Project extends Component {
             uid,
             setSearch,
             projectSteps,
-            firebaseApp
+            firebaseApp,
+            stepIndex
     } = this.props
 
         const actions = [
@@ -258,16 +272,16 @@ class Project extends Component {
                                     />
                                 </FireForm>
                                 <div>
-                                    <Stepper activeStep={''} orientation="vertical">
+                                    <Stepper activeStep={stepIndex} orientation="vertical">
 
-                                        {projectSteps.map(step => {
+                                        {projectSteps.map((step, i) => {
                                             return <Step>
                                                 <StepLabel>{step.val.name}</StepLabel>
                                                 <StepContent>
                                                     <p>
                                                         {step.val.description}
                                                     </p>
-                                                    {this.renderStepActions(step.key)}
+                                                    {this.renderStepActions(i)}
                                                 </StepContent>
                                             </Step>
                                         })
@@ -340,6 +354,8 @@ const mapStateToProps = (state, ownProps) => {
     const userCompanies = lists[userCompaniesPath] ? lists[userCompaniesPath] : []
 
     const companies = lists[path]
+    const values = getPath(state, `projects/${uid}`)
+    const stepIndex = values.stepIndex !== undefined ? values.stepIndex : 0
 
     return {
         auth,
@@ -352,6 +368,7 @@ const mapStateToProps = (state, ownProps) => {
         projectUsers: getList(state, `project_users/${uid}`),
         projectSteps: getList(state, `project_steps/${uid}`),
         intl,
+        stepIndex,
         isGranted: grant => isGranted(state, grant)
     }
 }

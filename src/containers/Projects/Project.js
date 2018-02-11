@@ -354,7 +354,7 @@ const mapStateToProps = (state, ownProps) => {
     const userCompanies = lists[userCompaniesPath] ? lists[userCompaniesPath] : []
 
     const companies = lists[path]
-    const values = getPath(state, `projects/${uid}`)
+    const values = getPath(state, `projects/${uid}`) ? getPath(state, `projects/${uid}`) : {}
     const stepIndex = values.stepIndex !== undefined ? values.stepIndex : 0
 
     return {

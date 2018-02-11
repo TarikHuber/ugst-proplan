@@ -7,13 +7,19 @@ import { withRouter } from 'react-router-dom'
 import muiThemeable from 'material-ui/styles/muiThemeable'
 import isGranted from 'rmw-shell/lib/utils/auth'
 import { filterActions } from 'material-ui-filter'
-import { getPath } from 'firekit'
+import { getPath, getList } from 'firekit'
+import {
+  Step,
+  Stepper,
+  StepLabel
+} from 'material-ui/Stepper'
 
 class ProjectItem extends Component {
   componentWillMount() {
-    const { watchPath, path } = this.props
+    const { watchPath, watchList, path, projectKey } = this.props
 
     watchPath(path)
+    watchList(`project_steps/${projectKey}`)
   }
 
   componentWillUnmount() {
@@ -22,15 +28,30 @@ class ProjectItem extends Component {
   }
 
   render() {
-    const { history, val, projectKey } = this.props
+    const { history, val, projectKey, projectSteps } = this.props
 
     return (<ListItem
       onClick={() => history.push(`/projects/edit/${projectKey}/data`)}
       key={projectKey}
       id={projectKey}
-      primaryText={val.name}
-      secondaryText={val.description ? val.description : ''}
-    />)
+    // primaryText={val.name}
+    // secondaryText={val.description ? val.description : ''}
+    >
+      <div>
+        {val.name}
+
+        <Stepper activeStep={0}>
+          {
+            projectSteps.map((step, i) => {
+              return <Step>
+                <StepLabel>{step.val.name}</StepLabel>
+              </Step>
+            })
+          }
+        </Stepper>
+      </div>
+    </ListItem>
+    )
   }
 }
 
@@ -49,6 +70,7 @@ const mapStateToProps = (state, ownProps) => {
     path,
     projectKey,
     val: getPath(state, path) ? getPath(state, path) : {},
+    projectSteps: getList(state, `project_steps/${projectKey}`),
     isGranted: grant => isGranted(state, grant)
   }
 }

@@ -150,7 +150,7 @@ class Workflows extends Component {
           {
             isGranted('create_workflow') &&
             <FloatingActionButton
-              onClick={() => { history.push(`/${path}/create`) }}
+              onClick={() => { history.push(`/create_workflow`) }}
               style={{ position: 'fixed', bottom: 15, right: 20, zIndex: 99 }}
               secondary={true}>
               <FontIcon className="material-icons" >add</FontIcon>

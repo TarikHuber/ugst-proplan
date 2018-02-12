@@ -19,6 +19,7 @@ const Routes = [
   <RestrictedRoute type="private" path="/" exact component={AsyncDashboard} />,
   <RestrictedRoute type="private" path="/workflows" exact component={AsyncWorkflows} />,
   <RestrictedRoute type="private" path="/workflows/:type" exact component={AsyncWorkflows} />,
+  <RestrictedRoute type="private" path="/create_workflow" exact component={AsyncWorkflow} />,
   <RestrictedRoute type="private" path="/workflows/edit/:uid/:editType" exact component={AsyncWorkflow} />,
   <RestrictedRoute type="private" path="/steps/:basePath/:workflowUid/create" exact component={AsyncWorkflowStep} />,
   <RestrictedRoute type="private" path="/steps/:basePath/:workflowUid/edit/:uid" exact component={AsyncWorkflowStep} />,

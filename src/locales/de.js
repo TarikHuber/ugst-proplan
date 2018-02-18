@@ -1,4 +1,4 @@
-import { defineMessages } from 'react-intl';
+import { defineMessages } from 'react-intl'
 
 const messages = defineMessages({
   app_name: 'React Meist Gesucht',
@@ -147,6 +147,7 @@ const messages = defineMessages({
   user_label_search: 'Suchen',
   document: 'Document',
   collection: 'Collection',
-});
+  urgestein: 'Urgestein'
+})
 
-export default messages;
+export default messages

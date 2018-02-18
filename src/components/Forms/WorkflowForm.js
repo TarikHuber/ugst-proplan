@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { injectIntl, intlShape } from 'react-intl'
-import { Field, reduxForm, formValueSelector } from 'redux-form'
+import { Field, reduxForm, formValueSelector, FieldArray } from 'redux-form'
 import { TextField } from 'redux-form-material-ui'
 import { setSimpleValue } from 'rmw-shell/lib/store/simpleValues/actions'
 import { ImageCropDialog } from '../../containers/ImageCropDialog'
@@ -9,8 +9,75 @@ import { withRouter } from 'react-router-dom'
 import muiThemeable from 'material-ui/styles/muiThemeable'
 import PropTypes from 'prop-types'
 import { AvatarImageField } from '../ReduxFormFields'
+import { List, ListItem } from 'material-ui/List'
+import Subheader from 'material-ui/Subheader'
+import FontIcon from 'material-ui/FontIcon';
+import IconButton from 'material-ui/IconButton';
 
 class Form extends Component {
+
+
+  renderField = ({ input, label, type, meta: { touched, error } }) => (
+    <div>
+      <label>{label}</label>
+      <div>
+        <input {...input} type={type} placeholder={label} />
+        {touched && error && <span>{error}</span>}
+      </div>
+    </div>
+  )
+
+
+  renderSteps = (props) => {
+    const { fields } = props
+    const { intl } = this.props
+
+    return < List >
+      {
+        fields.map((step, index) => (
+          <ListItem key={index} disabled={true}>
+
+            <div style={{ display: 'flex' }}>
+              <IconButton
+                label={`Remove step`}
+                onClick={() => fields.remove(index)}>
+                <FontIcon className="material-icons" >delete</FontIcon>
+              </IconButton>
+              <br />
+              <Field
+                name={`${step}.name`}
+                component={TextField}
+                hintText={intl.formatMessage({ id: 'name_hint' })}
+                floatingLabelText={intl.formatMessage({ id: 'name_label' })}
+                withRef
+              />
+              <br />
+              <Field
+                name={`${step}.description`}
+                component={TextField}
+                hintText={intl.formatMessage({ id: 'description_hint' })}
+                floatingLabelText={intl.formatMessage({ id: 'description_label' })}
+                withRef
+              />
+            </div>
+
+
+            <FieldArray name={`${step}.steps`} component={this.renderSteps} />
+
+          </ListItem>
+        ))
+      }
+
+      <IconButton
+        label={`Add step`}
+        primary={true}
+        onClick={() => fields.push({})}>
+        <FontIcon className="material-icons" >add</FontIcon>
+      </IconButton>
+    </List >
+  }
+
+
   render() {
     const {
       handleSubmit,
@@ -68,6 +135,10 @@ class Form extends Component {
               ref='description'
               withRef
             />
+          </div>
+          <div>
+            <Subheader >Steps</Subheader>
+            <FieldArray name="steps" component={this.renderSteps} />
           </div>
         </div>
         <span style={{ width: 50, display: 'inline-block' }} />

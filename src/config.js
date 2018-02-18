@@ -26,7 +26,7 @@ const config = {
     'password'
   ],
   initial_state: {
-    theme: 'dark',
+    theme: 'urgestein',
     locale: 'en',
   },
   drawer_width: 256,

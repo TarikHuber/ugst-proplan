@@ -1,20 +1,25 @@
-import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
-import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
-import icsTheme from './ics_theme';
+import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme'
+import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme'
+import icsTheme from './ics_theme'
+import urgestein from './urgestein'
 
 const themes = [
   {
     id: 'light',
-    source: lightBaseTheme,
+    source: lightBaseTheme
   },
   {
     id: 'dark',
-    source: darkBaseTheme,
+    source: darkBaseTheme
   },
   {
     id: 'ics',
-    source: icsTheme,
+    source: icsTheme
   },
-];
+  {
+    id: 'urgestein',
+    source: urgestein
+  }
+]
 
-export default themes;
+export default themes

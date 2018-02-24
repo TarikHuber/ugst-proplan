@@ -8,11 +8,6 @@ import muiThemeable from 'material-ui/styles/muiThemeable'
 import isGranted from 'rmw-shell/lib/utils/auth'
 import { filterActions } from 'material-ui-filter'
 import { getPath, getList } from 'firekit'
-import {
-  Step,
-  Stepper,
-  StepLabel
-} from 'material-ui/Stepper'
 
 class ProjectItem extends Component {
   componentWillMount() {
@@ -28,29 +23,15 @@ class ProjectItem extends Component {
   }
 
   render() {
-    const { history, val, projectKey, projectSteps } = this.props
+    const { history, val, projectKey } = this.props
 
     return (<ListItem
       onClick={() => history.push(`/projects/edit/${projectKey}/data`)}
       key={projectKey}
       id={projectKey}
-    // primaryText={val.name}
-    // secondaryText={val.description ? val.description : ''}
-    >
-      <div>
-        {val.name}
-
-        <Stepper activeStep={0}>
-          {
-            projectSteps.map((step, i) => {
-              return <Step>
-                <StepLabel>{step.val.name}</StepLabel>
-              </Step>
-            })
-          }
-        </Stepper>
-      </div>
-    </ListItem>
+      primaryText={val.step ? val.step.name : ''}
+      secondaryText={val.name}
+    />
     )
   }
 }

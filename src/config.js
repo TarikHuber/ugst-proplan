@@ -27,7 +27,7 @@ const config = {
   ],
   initial_state: {
     theme: 'urgestein',
-    locale: 'en',
+    locale: 'de',
   },
   drawer_width: 256,
   locales,

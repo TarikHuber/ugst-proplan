@@ -7,7 +7,6 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import SearchField from 'rmw-shell/lib/components/SearchField'
 import WorkflowForm from '../../components/Forms/WorkflowForm'
-import WorkflowSteps from '../WorkflowSteps/WorkflowSteps'
 import isGranted from 'rmw-shell/lib/utils/auth'
 import muiThemeable from 'material-ui/styles/muiThemeable'
 import { ResponsiveMenu } from 'material-ui-responsive-menu'
@@ -19,7 +18,8 @@ import { injectIntl, intlShape } from 'react-intl'
 import { setSimpleValue } from 'rmw-shell/lib/store/simpleValues/actions'
 import { withFirebase } from 'firekit-provider'
 import { withRouter } from 'react-router-dom'
-
+import UsersToggle from '../UsersToggle/UsersToggle'
+import { getList } from 'firekit'
 
 const path = 'workflows'
 const form_name = 'workflow'
@@ -49,8 +49,9 @@ class Workflow extends Component {
     }
 
     componentDidMount() {
-        const { watchList, userCompaniesPath, setSearch } = this.props
+        const { watchList, userCompaniesPath, setSearch, uid } = this.props
         setSearch('users_toggle', '')
+        watchList(`workflow_users/${uid}`)
         watchList(userCompaniesPath)
         watchList(path)
     }
@@ -84,9 +85,38 @@ class Workflow extends Component {
     }
 
 
+    getToggledValue = (userUid) => {
+        const { workflowUsers } = this.props
+
+        let result = false
+
+        workflowUsers.forEach(user => {
+
+            if (user.key === userUid) {
+                result = true
+            }
+        });
+
+        return result
+
+    }
+
+    handleUserToggle = (userUid, toggled) => {
+        const { firebaseApp, uid } = this.props
+
+        if (toggled) {
+            firebaseApp.database().ref(`workflow_users/${uid}/${userUid}`).set(true)
+        } else {
+            firebaseApp.database().ref(`workflow_users/${uid}/${userUid}`).remove()
+        }
+
+
+    }
+
+
     render() {
         const {
-      history,
+            history,
             intl,
             setSimpleValue,
             match,
@@ -98,7 +128,7 @@ class Workflow extends Component {
             uid,
             setSearch,
             firebaseApp
-    } = this.props
+        } = this.props
 
         const actions = [
             <FlatButton
@@ -184,11 +214,15 @@ class Workflow extends Component {
                     </Tab>
                     {uid &&
                         <Tab
-                            value={'steps'}
-                            icon={<FontIcon className="material-icons">timeline</FontIcon>}>
+                            value={'users'}
+                            icon={<FontIcon className="material-icons">group</FontIcon>}>
                             {
-                                editType === 'steps' &&
-                                <WorkflowSteps  {...this.props} basePath={'workflow_steps'} />
+                                editType === 'users' &&
+                                <UsersToggle
+                                    {...this.props}
+                                    getValue={this.getToggledValue}
+                                    onToggle={this.handleUserToggle}
+                                />
                             }
                         </Tab>
                     }
@@ -238,6 +272,7 @@ const mapStateToProps = (state, ownProps) => {
         editType,
         delete_workflow,
         intl,
+        workflowUsers: getList(state, `workflow_users/${uid}`),
         isGranted: grant => isGranted(state, grant)
     }
 }

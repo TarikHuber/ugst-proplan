@@ -118,6 +118,12 @@
         ".write": "auth != null && root.child('user_projects/'+auth.uid+'/'+$uid).exists()"
       }
     },
+    "workflow_users": {
+      "$uid": {
+        ".read": "auth != null",
+        ".write": "(auth != null && root.child('admins/'+auth.uid).exists()) || root.child('user_grants/'+auth.uid+'/edit_workflow').exists()"
+      }
+    },
     "public_chats": {
       ".read": "auth != null",
       ".write": "auth != null"

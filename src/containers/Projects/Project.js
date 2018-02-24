@@ -11,7 +11,7 @@ import isGranted from 'rmw-shell/lib/utils/auth'
 import muiThemeable from 'material-ui/styles/muiThemeable'
 import { ResponsiveMenu } from 'material-ui-responsive-menu'
 import { Tabs, Tab } from 'material-ui/Tabs'
-import { change, submit } from 'redux-form'
+import { change, submit, formValueSelector } from 'redux-form'
 import { connect } from 'react-redux'
 import { filterActions } from 'material-ui-filter'
 import { injectIntl, intlShape } from 'react-intl'
@@ -20,7 +20,6 @@ import { withFirebase } from 'firekit-provider'
 import { withRouter } from 'react-router-dom'
 import UsersToggle from '../UsersToggle/UsersToggle'
 import { getList, getPath } from 'firekit'
-import WorkflowSteps from '../WorkflowSteps/WorkflowSteps'
 import {
     Step,
     Stepper,
@@ -129,25 +128,27 @@ class Project extends Component {
 
     }
 
-    handleNext = () => {
-        const { firebaseApp, uid, stepIndex } = this.props;
+    handleNext = (i, step) => {
+        const { firebaseApp, uid, stepIndex, projectSteps } = this.props;
 
         firebaseApp.database().ref(`${path}/${uid}`).update({
-            stepIndex: stepIndex + 1
+            stepIndex: stepIndex + 1,
+            step: projectSteps[stepIndex + 1]
         })
 
     };
 
     handlePrev = () => {
-        const { firebaseApp, uid, stepIndex } = this.props;
+        const { firebaseApp, uid, stepIndex, projectSteps } = this.props;
 
         firebaseApp.database().ref(`${path}/${uid}`).update({
-            stepIndex: stepIndex - 1
+            stepIndex: stepIndex - 1,
+            step: projectSteps[stepIndex - 1]
         })
 
     };
 
-    renderStepActions = (step) => {
+    renderStepActions = (i, step) => {
         const { stepIndex, projectSteps } = this.props;
 
         return (
@@ -157,10 +158,10 @@ class Project extends Component {
                     disableTouchRipple={true}
                     disableFocusRipple={true}
                     primary={true}
-                    onClick={this.handleNext}
+                    onClick={() => this.handleNext(i, step)}
                     style={{ marginRight: 12 }}
                 />
-                {step > 0 && (
+                {i > 0 && (
                     <FlatButton
                         label="Back"
                         disabled={stepIndex === 0}
@@ -176,7 +177,7 @@ class Project extends Component {
 
     render() {
         const {
-      history,
+            history,
             intl,
             setSimpleValue,
             match,
@@ -190,7 +191,8 @@ class Project extends Component {
             projectSteps,
             firebaseApp,
             stepIndex
-    } = this.props
+        } = this.props
+
 
         const actions = [
             <FlatButton
@@ -276,12 +278,12 @@ class Project extends Component {
 
                                         {projectSteps.map((step, i) => {
                                             return <Step>
-                                                <StepLabel>{step.val.name}</StepLabel>
+                                                <StepLabel>{step.name}</StepLabel>
                                                 <StepContent>
                                                     <p>
-                                                        {step.val.description}
+                                                        {step.description}
                                                     </p>
-                                                    {this.renderStepActions(i)}
+                                                    {this.renderStepActions(i, step)}
                                                 </StepContent>
                                             </Step>
                                         })
@@ -304,16 +306,6 @@ class Project extends Component {
                                     getValue={this.getToggledValue}
                                     onToggle={this.handleUserToggle}
                                 />
-                            }
-                        </Tab>
-                    }
-                    {uid &&
-                        <Tab
-                            value={'steps'}
-                            icon={<FontIcon className="material-icons">timeline</FontIcon>}>
-                            {
-                                editType === 'steps' &&
-                                <WorkflowSteps  {...this.props} basePath={'project_steps'} />
                             }
                         </Tab>
                     }
@@ -342,31 +334,30 @@ Project.propTypes = {
 }
 
 
+const getFormValue = formValueSelector('project')
+
 const mapStateToProps = (state, ownProps) => {
-    const { intl, simpleValues, lists, auth } = state
+    const { intl, simpleValues, auth } = state
     const { match } = ownProps
 
     const uid = match.params.uid
     const editType = match.params.editType ? match.params.editType : 'data'
     const delete_project = simpleValues.delete_project
 
-    const userCompaniesPath = `user_companies/`
-    const userCompanies = lists[userCompaniesPath] ? lists[userCompaniesPath] : []
-
-    const companies = lists[path]
     const values = getPath(state, `projects/${uid}`) ? getPath(state, `projects/${uid}`) : {}
     const stepIndex = values.stepIndex !== undefined ? values.stepIndex : 0
 
+    const projectWorkflow = getFormValue(state, 'workflow')
+    const projectSteps = projectWorkflow ? (projectWorkflow.steps ? projectWorkflow.steps : []) : []
+
     return {
         auth,
-        companies,
-        userCompaniesPath,
-        userCompanies,
         uid,
         editType,
         delete_project,
+        projectWorkflow,
         projectUsers: getList(state, `project_users/${uid}`),
-        projectSteps: getList(state, `project_steps/${uid}`),
+        projectSteps,
         intl,
         stepIndex,
         isGranted: grant => isGranted(state, grant)

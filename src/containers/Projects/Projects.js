@@ -44,7 +44,7 @@ class Projects extends Component {
     const {
       list,
       isGranted
-      } = this.props
+    } = this.props
 
 
     return (

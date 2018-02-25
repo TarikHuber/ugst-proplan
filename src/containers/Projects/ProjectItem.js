@@ -22,6 +22,24 @@ class ProjectItem extends Component {
     unwatchPath(path)
   }
 
+  getNextStep = (steps) => {
+
+
+    for (const step of steps) {
+      if (!step.done || step.done === undefined) {
+        return step.name
+      }
+
+      if (step.steps) {
+        if (this.getNextStep(step.steps)) {
+          return this.getNextStep(step.steps)
+        }
+      }
+    }
+
+
+  }
+
   render() {
     const { history, val, projectKey } = this.props
 
@@ -29,7 +47,7 @@ class ProjectItem extends Component {
       onClick={() => history.push(`/projects/edit/${projectKey}/data`)}
       key={projectKey}
       id={projectKey}
-      primaryText={val.step ? val.step.name : ''}
+      primaryText={val.steps ? this.getNextStep(val.steps) : ''}
       secondaryText={val.name}
     />
     )

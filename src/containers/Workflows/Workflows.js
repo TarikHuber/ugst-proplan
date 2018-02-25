@@ -38,7 +38,7 @@ class Workflows extends Component {
 
         workflows.forEach(workflow => {
           if (workflow.key === key) {
-            firebaseApp.database().ref(`projects/${snap.key}`).set({ authorUid: auth.uid, name: 'New Project', workflow: workflow.val })
+            firebaseApp.database().ref(`projects/${snap.key}`).set({ authorUid: auth.uid, name: 'New Project', workflow: workflow.val, steps: workflow.val.steps })
             firebaseApp.database().ref(`project_users/${snap.key}/${auth.uid}`).set(true)
           }
         });

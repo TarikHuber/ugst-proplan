@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { injectIntl, intlShape } from 'react-intl'
-import { Field, reduxForm, formValueSelector } from 'redux-form'
+import { Field, reduxForm, formValueSelector, FieldArray } from 'redux-form'
 import { TextField } from 'redux-form-material-ui'
 import { setSimpleValue } from 'rmw-shell/lib/store/simpleValues/actions'
 import { ImageCropDialog } from '../../containers/ImageCropDialog'
@@ -9,9 +9,53 @@ import { withRouter } from 'react-router-dom'
 import muiThemeable from 'material-ui/styles/muiThemeable'
 import PropTypes from 'prop-types'
 import { AvatarImageField } from '../ReduxFormFields'
+import FlatButton from 'material-ui/FlatButton'
+import { Card, CardHeader, CardText } from 'material-ui/Card'
 
 class Form extends Component {
-  render () {
+
+
+  hanldeNextClick = (field) => {
+    const { change } = this.props
+
+    change(`${field}.done`, true)
+
+  }
+
+
+  renderSteps = (props) => {
+    const { fields } = props
+    const { intl, getFormValue } = this.props
+
+    return fields.map((step, index) => {
+
+      console.log(getFormValue(`${step}`))
+
+      return <div style={{ marginLeft: 18 }}>
+        <Card expanded={true}>
+          <CardHeader
+            title={fields.get(index).name}
+            subtitle={fields.get(index).description}
+          //actAsExpander={!!getFormValue(`${step}.steps`)}
+          //showExpandableButton={!!getFormValue(`${step}.steps`)}
+          >
+            {!fields.get(index).done &&
+              <FlatButton label={intl.formatMessage({ id: 'done' })} secondary={true} onClick={() => this.hanldeNextClick(`${step}`)} />
+            }
+          </CardHeader>
+          <CardText expandable={true}>
+            <FieldArray name={`${step}.steps`} component={this.renderSteps} />
+          </CardText>
+        </Card>
+
+      </div>
+    })
+
+  }
+
+
+
+  render() {
     const {
       handleSubmit,
       intl,
@@ -71,6 +115,12 @@ class Form extends Component {
           </div>
         </div>
         <span style={{ width: 50, display: 'inline-block' }} />
+
+        <div>
+
+          <FieldArray name="steps" component={this.renderSteps} />
+
+        </div>
 
         <ImageCropDialog
           path={`companies/${uid}`}

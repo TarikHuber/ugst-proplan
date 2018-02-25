@@ -20,13 +20,6 @@ import { withFirebase } from 'firekit-provider'
 import { withRouter } from 'react-router-dom'
 import UsersToggle from '../UsersToggle/UsersToggle'
 import { getList, getPath } from 'firekit'
-import {
-    Step,
-    Stepper,
-    StepLabel,
-    StepContent,
-} from 'material-ui/Stepper';
-import RaisedButton from 'material-ui/RaisedButton'
 
 const path = 'projects'
 const form_name = 'project'
@@ -124,57 +117,6 @@ class Project extends Component {
 
     }
 
-    getCurrentIndex = () => {
-
-    }
-
-    handleNext = (i, step) => {
-        const { firebaseApp, uid, stepIndex, projectSteps } = this.props;
-
-        firebaseApp.database().ref(`${path}/${uid}`).update({
-            stepIndex: stepIndex + 1,
-            step: projectSteps[stepIndex + 1]
-        })
-
-    };
-
-    handlePrev = () => {
-        const { firebaseApp, uid, stepIndex, projectSteps } = this.props;
-
-        firebaseApp.database().ref(`${path}/${uid}`).update({
-            stepIndex: stepIndex - 1,
-            step: projectSteps[stepIndex - 1]
-        })
-
-    };
-
-    renderStepActions = (i, step) => {
-        const { stepIndex, projectSteps } = this.props;
-
-        return (
-            <div style={{ margin: '12px 0' }}>
-                <RaisedButton
-                    label={stepIndex + 1 === projectSteps.length ? 'Finish' : 'Next'}
-                    disableTouchRipple={true}
-                    disableFocusRipple={true}
-                    primary={true}
-                    onClick={() => this.handleNext(i, step)}
-                    style={{ marginRight: 12 }}
-                />
-                {i > 0 && (
-                    <FlatButton
-                        label="Back"
-                        disabled={stepIndex === 0}
-                        disableTouchRipple={true}
-                        disableFocusRipple={true}
-                        onClick={this.handlePrev}
-                    />
-                )}
-            </div>
-        );
-    }
-
-
     render() {
         const {
             history,
@@ -188,9 +130,8 @@ class Project extends Component {
             editType,
             uid,
             setSearch,
-            projectSteps,
             firebaseApp,
-            stepIndex
+            getFormValue
         } = this.props
 
 
@@ -262,6 +203,7 @@ class Project extends Component {
                             <div style={{ margin: 15, display: 'flex' }}>
                                 <FireForm
                                     firebaseApp={firebaseApp}
+                                    getFormValue={getFormValue}
                                     name={form_name}
                                     path={`/${path}/`}
                                     validate={this.validate}
@@ -273,25 +215,6 @@ class Project extends Component {
                                         handlePhotoUploadSuccess={this.handlePhotoUploadSuccess}
                                     />
                                 </FireForm>
-                                <div>
-                                    <Stepper activeStep={stepIndex} orientation="vertical">
-
-                                        {projectSteps.map((step, i) => {
-                                            return <Step>
-                                                <StepLabel>{step.name}</StepLabel>
-                                                <StepContent>
-                                                    <p>
-                                                        {step.description}
-                                                    </p>
-                                                    {this.renderStepActions(i, step)}
-                                                </StepContent>
-                                            </Step>
-                                        })
-
-                                        }
-
-                                    </Stepper>
-                                </div>
                             </div>
                         }
                     </Tab>
@@ -356,6 +279,7 @@ const mapStateToProps = (state, ownProps) => {
         editType,
         delete_project,
         projectWorkflow,
+        getFormValue: (field) => getFormValue(state, field),
         projectUsers: getList(state, `project_users/${uid}`),
         projectSteps,
         intl,
